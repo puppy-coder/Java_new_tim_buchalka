@@ -3,8 +3,16 @@ package com.codecafe.NestedClasses.domain;
 import java.security.spec.RSAOtherPrimeInfo;
 import java.util.Comparator;
 
+// Static Nested Class Experiment
 public class Employee {
 
+    // Static nested class
+    // To create a static class, you add a class as part of another class's body(Employee),
+    // making it static. This lets you access it via the class name, like other static variables. But
+    // this nested static class has access to all the outer classes private members and vice versa.
+
+    // Important : Using a nested class for this comparator, I was able to keep my attributes
+    //encapsulated, without needing to provide getter methods for each one
     public static class EmployeeComparator<T extends Employee> implements Comparator<Employee> {
 
         private String sortType;

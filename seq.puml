@@ -1,0 +1,54 @@
+@startuml
+actor A as "Consumer"
+participant B as "Contact Notification API"
+participant C as "Template Registration API"
+queue D as "Communication Request Preparation topic"
+participant E as "Communication Request Preparation Physical Mail Listener"
+queue F as "Outbound Communication Topic"
+participant G as "Physical Mail Channel Listener"
+participant H as "Document Processing API"
+participant I as "Document Management API"
+participant J as "Fuji Proxy API"
+queue K as "Response Communication Topic"
+
+A -> B : Requests Physical Mail communication
+
+' Assuming flow skips decision check and directly continues
+B -> C : Get templates request
+C --> B : Template response
+
+alt Template response fails or doesn't exist
+    B -> K : Sends NotificationPreProcessingFailed event
+    note right of B: Flow terminates here
+else Template response succeeds
+    B -> B : Performs template validation
+
+    B -> D : Sends PhysicalMailPreparationRequested event
+    D -> E : PhysicalMailPreparationRequested event
+    E -> F : Sends PhysicalMailStarted event
+    F -> G : PhysicalMailStarted event
+
+    alt Both documentId and contentId exist OR both missing
+        G -> K : Sends NotificationPreProcessingFailed event
+        note right of G: Flow terminates here
+    else Only documentId exists
+        G -> I : Get document request
+        I --> G : Document base64 encoded
+    else Only contentId exists
+        G -> H : Generate document request
+        H --> G : Generated document base64 encoded
+    end
+
+    G -> J : Upload document request
+
+    alt Upload fails
+        J --> G : Failed
+        G -> K : Sends PhysicalMailSendAttemptFailed event
+        note right of G: Flow terminates here
+    else Upload succeeds
+        J --> G : Successful
+        G -> K : Sends PhysicalMailRequested event
+        note right of G: Flow terminates here
+    end
+end
+@enduml
