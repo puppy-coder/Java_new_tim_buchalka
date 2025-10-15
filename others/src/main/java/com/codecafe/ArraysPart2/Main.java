@@ -30,6 +30,9 @@ public class Main {
         obj[1] = new StringBuilder("World");
         obj[3] = newArray; // Assigning array of integers
 
+        int a2[] = new int[5];
+
+
 
     }
 }
