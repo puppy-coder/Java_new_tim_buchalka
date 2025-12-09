@@ -6,7 +6,7 @@ import java.util.Arrays;
 public class Main {
     public static void main(String[] args) {
 
-        int[] arr = {1, 11, 2, 3, 4, 5, 10};
+        int[] arr = {12, 13, 14, 1, 2, 3, 4, 5, 10, 11, 15};
         boolean isAscendingOrder = false;
 
         int[] reverse = new int[arr.length];
@@ -28,6 +28,23 @@ public class Main {
         }
 
         System.out.println("Array is sorted in Ascending Order = " + isAscendingOrder );
+
+        //Find the second largest element in the array
+        int largest = Integer.MIN_VALUE;
+        int secondLargest = Integer.MIN_VALUE;
+        for(int i = 0; i<arr.length;i++){
+            if(arr[i] > largest){
+                secondLargest = largest;
+
+                largest = arr[i];
+            }
+            // handle the case when an element is less than largest but greater than secondLargest.
+            if(arr[i] > secondLargest && arr[i] != largest){
+                secondLargest = arr[i];
+            }
+        }
+        System.out.println("Largest Number = " + largest);
+        System.out.println("Second Largest number = " + secondLargest);
 
     }
 }
